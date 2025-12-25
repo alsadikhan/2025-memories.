@@ -1,29 +1,43 @@
-import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
+import { ViewState } from "./types";
+import FloatingHearts from "@/components/FloatingHearts";
+import Login from "@/components/Login";
+import Dashboard from "@/components/Dashboard";
 import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/not-found";
-
-function Router() {
-  return (
-    <Switch>
-      {/* Add pages below */}
-      {/* <Route path="/" component={Home}/> */}
-      {/* Fallback to 404 */}
-      <Route component={NotFound} />
-    </Switch>
-  );
-}
+import { AnimatePresence, motion } from "framer-motion";
 
 function App() {
+  const [viewState, setViewState] = useState<ViewState>("LOGIN");
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <div className="min-h-screen font-sans bg-gradient-to-br from-pink-50 to-white text-gray-900 overflow-hidden relative">
+      <FloatingHearts />
+      
+      <AnimatePresence mode="wait">
+        {viewState === "LOGIN" ? (
+          <motion.div
+            key="login"
+            exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
+            transition={{ duration: 0.5 }}
+            className="absolute inset-0"
+          >
+            <Login onLogin={() => setViewState("DASHBOARD")} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="dashboard"
+            initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.8 }}
+            className="h-full"
+          >
+            <Dashboard />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
+      <Toaster />
+    </div>
   );
 }
 
