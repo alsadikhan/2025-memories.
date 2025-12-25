@@ -50,6 +50,8 @@ export default function Login({ onLogin }: LoginProps) {
     }, 500);
   };
 
+  const [isTyping, setIsTyping] = useState(false);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (password.toLowerCase().trim() === "princess") {
@@ -66,8 +68,30 @@ export default function Login({ onLogin }: LoginProps) {
 
   return (
     <div className="min-h-screen flex items-center justify-center relative z-10 px-4 overflow-hidden bg-[#fff5f7]">
-      {/* Dynamic Background Elements */}
+      {/* Floating emojis background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute text-2xl opacity-20"
+            initial={{ 
+              x: Math.random() * 100 + "vw", 
+              y: Math.random() * 100 + "vh" 
+            }}
+            animate={{ 
+              y: ["0vh", "100vh"],
+              rotate: 360 
+            }}
+            transition={{ 
+              duration: 15 + Math.random() * 20, 
+              repeat: Infinity, 
+              ease: "linear" 
+            }}
+          >
+            {["🌸", "✨", "🎀", "🍭"][i % 4]}
+          </motion.div>
+        ))}
+        
         <motion.div 
           animate={{ 
             scale: [1, 1.2, 1],
@@ -94,19 +118,22 @@ export default function Login({ onLogin }: LoginProps) {
         transition={{ duration: 0.8 }}
         className="relative z-20 w-full max-w-md"
       >
-        <div className="bg-white/60 backdrop-blur-3xl p-10 rounded-[3.5rem] shadow-[0_40px_80px_-15px_rgba(236,72,153,0.2)] border border-white/80 text-center">
+        <div className="bg-white/60 backdrop-blur-3xl p-10 rounded-[3.5rem] shadow-[0_40px_80px_-15px_rgba(236,72,153,0.2)] border border-white/80 text-center group">
           <motion.div
             whileHover={{ scale: 1.1, rotate: 10 }}
-            animate={{ 
+            animate={isTyping ? { 
+              scale: [1, 1.2, 1],
+              rotate: [0, -5, 5, 0]
+            } : {
               y: [0, -5, 0],
             }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: isTyping ? 0.5 : 2, repeat: Infinity, ease: "easeInOut" }}
             className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-primary to-rose-400 shadow-lg shadow-primary/30 mb-8"
           >
             <Heart className="w-12 h-12 text-white fill-white" />
           </motion.div>
           
-          <h1 className="text-5xl font-heading mb-4 text-gray-800">For My Love</h1>
+          <h1 className="text-5xl font-heading mb-4 text-gray-800 group-hover:text-primary transition-colors">For My Love</h1>
           <p className="text-muted-foreground mb-10 font-medium">Please enter the secret word to see your surprise</p>
           
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -119,6 +146,8 @@ export default function Login({ onLogin }: LoginProps) {
                   type="password"
                   placeholder="The secret word..."
                   value={password}
+                  onFocus={() => setIsTyping(true)}
+                  onBlur={() => setIsTyping(false)}
                   onChange={(e) => setPassword(e.target.value)}
                   className="text-center text-xl bg-white/80 border-pink-100 focus:border-primary focus:ring-primary/20 rounded-2xl h-16 transition-all shadow-sm font-heading tracking-widest"
                   autoFocus
@@ -127,7 +156,7 @@ export default function Login({ onLogin }: LoginProps) {
               <motion.div
                 animate={{ 
                   rotate: password.length * 10,
-                  scale: password.length > 0 ? 1.2 : 1 
+                  scale: password.length > 0 ? [1, 1.5, 1.2] : 1 
                 }}
                 className="absolute right-4 top-1/2 -translate-y-1/2"
               >
@@ -142,24 +171,28 @@ export default function Login({ onLogin }: LoginProps) {
               <span className="relative z-10 flex items-center justify-center gap-2">
                 Unlock Surprise
                 <motion.div
-                  animate={{ scale: [1, 1.3, 1] }}
+                  animate={{ 
+                    scale: [1, 1.3, 1],
+                    rotate: [0, 15, -15, 0]
+                  }}
                   transition={{ duration: 1, repeat: Infinity }}
                 >
                   <Heart className="w-5 h-5 fill-current" />
                 </motion.div>
               </span>
               <motion.div 
-                className="absolute inset-0 bg-white/20"
-                initial={{ x: "-100%" }}
-                whileHover={{ x: "0%" }}
-                transition={{ duration: 0.3 }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000"
               />
             </Button>
           </form>
           
           <div className="mt-10 pt-8 border-t border-pink-50 flex justify-center gap-6">
             <div className="text-center">
-              <div className="w-2 h-2 rounded-full bg-primary mx-auto mb-2 animate-bounce" />
+              <motion.div 
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="w-2 h-2 rounded-full bg-primary mx-auto mb-2" 
+              />
               <span className="text-[10px] uppercase tracking-widest text-primary/40 font-bold">Made with Love</span>
             </div>
           </div>
