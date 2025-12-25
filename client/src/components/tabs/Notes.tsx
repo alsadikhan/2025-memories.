@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import { Pin } from "lucide-react";
+import { Heart } from "lucide-react";
 
 const REMINDERS = [
   { id: 1, text: "You are capable of amazing things.", color: "bg-yellow-100", rotate: "-rotate-2" },
@@ -12,31 +12,60 @@ const REMINDERS = [
 
 export default function Notes() {
   return (
-    <div className="p-4 max-w-3xl mx-auto">
+    <div className="p-4 max-w-5xl mx-auto">
       <h2 className="text-3xl font-heading text-center mb-8">Daily Reminders</h2>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pb-20">
         {REMINDERS.map((note, index) => (
           <motion.div
             key={note.id}
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1, type: "spring" }}
-            whileHover={{ scale: 1.05, rotate: 0, zIndex: 10 }}
-            className={`transform ${note.rotate} transition-all duration-300`}
+            initial={{ opacity: 0, scale: 0.5, rotate: -10 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ 
+              delay: index * 0.15, 
+              type: "spring",
+              stiffness: 200,
+              damping: 12
+            }}
+            whileHover={{ 
+              scale: 1.1, 
+              rotate: index % 2 === 0 ? 3 : -3,
+              zIndex: 10,
+              y: -10
+            }}
+            whileTap={{ scale: 0.95 }}
+            className="perspective-1000"
           >
-            <Card className={`${note.color} border-none shadow-md overflow-hidden relative`}>
-              <div className="absolute top-3 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-gray-300 shadow-inner z-10 border border-gray-400"></div>
-              <CardContent className="p-8 pt-10 flex flex-col items-center justify-center min-h-[160px] text-center">
-                <p className="font-heading text-2xl text-gray-800 leading-relaxed">
-                  "{note.text}"
-                </p>
-                <div className="mt-4 flex gap-1">
-                   <div className="w-1 h-1 rounded-full bg-gray-400/50" />
-                   <div className="w-1 h-1 rounded-full bg-gray-400/50" />
-                   <div className="w-1 h-1 rounded-full bg-gray-400/50" />
-                </div>
+            <Card className={`${note.color} border-none shadow-[0_10px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] overflow-hidden relative cursor-pointer transition-shadow duration-300 rounded-2xl`}>
+              <div className="absolute top-0 left-0 w-full h-2 bg-black/5" />
+              <div className="absolute top-4 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-white/80 shadow-inner z-10 border border-black/5 flex items-center justify-center">
+                <div className="w-1 h-1 rounded-full bg-black/20" />
+              </div>
+              
+              <CardContent className="p-10 pt-12 flex flex-col items-center justify-center min-h-[200px] text-center">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: index * 0.2 + 0.5 }}
+                >
+                  <p className="font-heading text-3xl text-gray-800 leading-relaxed selection:bg-black/10">
+                    "{note.text}"
+                  </p>
+                </motion.div>
+                
+                <motion.div 
+                  className="mt-6 flex gap-2"
+                  animate={{ opacity: [0.3, 0.6, 0.3] }}
+                  transition={{ duration: 3, repeat: Infinity, delay: index * 0.5 }}
+                >
+                   <Heart className="w-3 h-3 text-primary/30 fill-current" />
+                   <Heart className="w-3 h-3 text-primary/30 fill-current" />
+                   <Heart className="w-3 h-3 text-primary/30 fill-current" />
+                </motion.div>
               </CardContent>
+              
+              {/* Paper texture overlay */}
+              <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/felt.png')]" />
             </Card>
           </motion.div>
         ))}
