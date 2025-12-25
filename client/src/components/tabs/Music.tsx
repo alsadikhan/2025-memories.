@@ -55,7 +55,7 @@ export default function Music() {
     let interval: NodeJS.Timeout;
     if (isPlaying) {
       interval = setInterval(() => {
-        setProgress((prev) => (prev >= 100 ? 0 : prev + 0.5));
+        setProgress((prev) => (prev >= 100 ? 0 : prev + 0.3));
       }, 100);
     }
     return () => clearInterval(interval);
@@ -84,26 +84,39 @@ export default function Music() {
   };
 
   return (
-    <div className="max-w-md mx-auto p-4 space-y-6">
-      <h2 className="text-3xl font-heading text-center mb-6">Our Playlist</h2>
+    <div className="max-w-md mx-auto p-4 space-y-8 pb-24">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center"
+      >
+        <h2 className="text-5xl font-heading mb-2 text-primary">Our Symphony</h2>
+        <p className="text-muted-foreground italic">The soundtrack of our love story</p>
+      </motion.div>
       
-      <Card className="bg-white/60 backdrop-blur-md border-white/50 shadow-xl overflow-hidden">
-        <CardContent className="p-6">
-          <div className="aspect-square rounded-2xl overflow-hidden shadow-inner mb-6 relative group">
-            <img 
+      <Card className="bg-white/40 backdrop-blur-2xl border-white/60 shadow-[0_20px_50px_rgba(236,72,153,0.15)] overflow-hidden rounded-[2.5rem] border-2">
+        <CardContent className="p-8">
+          <div className="relative aspect-square rounded-[2rem] overflow-hidden shadow-2xl mb-8 group">
+            <motion.img 
+              key={currentSong.id}
+              initial={{ scale: 1.2, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.8 }}
               src={currentSong.cover} 
               alt={currentSong.title}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+              className="w-full h-full object-cover" 
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            
             {isPlaying && (
-              <div className="absolute inset-0 bg-black/20 flex items-center justify-center space-x-1">
-                {[1, 2, 3, 4].map((i) => (
+              <div className="absolute bottom-6 left-6 flex items-end gap-1.5 h-12">
+                {[...Array(6)].map((_, i) => (
                   <motion.div
                     key={i}
-                    className="w-1 bg-white rounded-full"
-                    animate={{ height: ["20%", "60%", "20%"] }}
+                    className="w-1.5 bg-white/90 rounded-full"
+                    animate={{ height: ["20%", "100%", "40%", "80%", "20%"] }}
                     transition={{
-                      duration: 0.8,
+                      duration: 0.8 + Math.random(),
                       repeat: Infinity,
                       delay: i * 0.1,
                     }}
@@ -111,90 +124,124 @@ export default function Music() {
                 ))}
               </div>
             )}
-            <Button
-              variant="secondary"
-              size="icon"
-              className="absolute bottom-4 right-4 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white text-primary shadow-lg"
+            
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="absolute bottom-6 right-6 w-14 h-14 rounded-full bg-white/20 backdrop-blur-xl border border-white/40 flex items-center justify-center text-white shadow-lg hover:bg-white/30 transition-colors"
               onClick={(e) => handleDownload(e, currentSong)}
             >
-              <Download className="w-5 h-5" />
-            </Button>
+              <Download className="w-6 h-6" />
+            </motion.button>
           </div>
           
-          <div className="text-center mb-6">
-            <h3 className="text-2xl font-bold text-gray-800">{currentSong.title}</h3>
-            <p className="text-muted-foreground">{currentSong.artist}</p>
+          <div className="text-center mb-8">
+            <motion.h3 
+              key={`title-${currentSong.id}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-3xl font-bold text-gray-800 mb-1"
+            >
+              {currentSong.title}
+            </motion.h3>
+            <motion.p 
+              key={`artist-${currentSong.id}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-primary font-medium text-lg"
+            >
+              {currentSong.artist}
+            </motion.p>
           </div>
           
-          <div className="space-y-4">
-            <Slider 
-              value={[progress]} 
-              max={100} 
-              step={1}
-              className="cursor-pointer"
-            />
+          <div className="space-y-8">
+            <div className="relative px-2">
+              <Slider 
+                value={[progress]} 
+                max={100} 
+                step={0.1}
+                className="cursor-pointer"
+              />
+              <div className="flex justify-between mt-3 text-xs font-bold text-muted-foreground tracking-tighter">
+                <span>0:00</span>
+                <span>3:45</span>
+              </div>
+            </div>
             
-            <div className="flex justify-between items-center px-4">
-              <Button variant="ghost" size="icon" onClick={prevSong} className="hover:bg-pink-100 rounded-full">
-                <SkipBack className="w-6 h-6 text-gray-700" />
+            <div className="flex justify-between items-center px-6">
+              <Button variant="ghost" size="icon" onClick={prevSong} className="hover:bg-primary/10 rounded-full w-12 h-12">
+                <SkipBack className="w-8 h-8 text-primary fill-primary/10" />
               </Button>
               
               <Button 
                 onClick={togglePlay}
-                className="w-16 h-16 rounded-full bg-primary hover:bg-primary/90 shadow-lg shadow-primary/30 flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+                className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-rose-500 hover:from-rose-600 hover:to-primary shadow-[0_15px_30px_rgba(236,72,153,0.4)] flex items-center justify-center transition-all hover:scale-110 active:scale-90 border-4 border-white"
               >
                 {isPlaying ? (
-                  <Pause className="w-8 h-8 fill-white text-white ml-0.5" />
+                  <Pause className="w-10 h-10 fill-white text-white" />
                 ) : (
-                  <Play className="w-8 h-8 fill-white text-white ml-1" />
+                  <Play className="w-10 h-10 fill-white text-white ml-2" />
                 )}
               </Button>
               
-              <Button variant="ghost" size="icon" onClick={nextSong} className="hover:bg-pink-100 rounded-full">
-                <SkipForward className="w-6 h-6 text-gray-700" />
+              <Button variant="ghost" size="icon" onClick={nextSong} className="hover:bg-primary/10 rounded-full w-12 h-12">
+                <SkipForward className="w-8 h-8 text-primary fill-primary/10" />
               </Button>
             </div>
           </div>
         </CardContent>
       </Card>
       
-      <div className="bg-white/40 rounded-xl p-4 backdrop-blur-sm">
-        <h4 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">Up Next</h4>
-        <div className="space-y-2">
+      <div className="space-y-4">
+        <h4 className="text-sm font-bold text-primary/60 mb-4 uppercase tracking-[0.2em] px-2">Your Favorites</h4>
+        <div className="space-y-3">
           {PLAYLIST.map((song, index) => (
-            <div 
+            <motion.div 
               key={song.id}
-              className={`flex items-center p-2 rounded-lg transition-colors group ${
-                index === currentSongIndex ? "bg-white/60 shadow-sm border border-pink-100" : "hover:bg-white/30 cursor-pointer"
+              whileHover={{ x: 10 }}
+              className={`flex items-center p-4 rounded-[1.5rem] transition-all group ${
+                index === currentSongIndex ? "bg-primary text-white shadow-xl shadow-primary/30" : "bg-white/40 hover:bg-white/60 backdrop-blur-sm cursor-pointer"
               }`}
               onClick={() => {
                 setCurrentSongIndex(index);
                 setIsPlaying(true);
               }}
             >
-              <div className="w-10 h-10 rounded bg-gray-200 overflow-hidden mr-3">
+              <div className="w-14 h-14 rounded-2xl overflow-hidden mr-4 shadow-lg border-2 border-white/20">
                 <img src={song.cover} alt={song.title} className="w-full h-full object-cover" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className={`text-sm font-medium truncate ${index === currentSongIndex ? "text-primary" : "text-gray-700"}`}>
+                <p className={`text-lg font-bold truncate ${index === currentSongIndex ? "text-white" : "text-gray-800"}`}>
                   {song.title}
                 </p>
-                <p className="text-xs text-muted-foreground truncate">{song.artist}</p>
+                <p className={`text-sm truncate ${index === currentSongIndex ? "text-white/80" : "text-primary/70"}`}>
+                  {song.artist}
+                </p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 {index === currentSongIndex && isPlaying && (
-                  <Volume2 className="w-4 h-4 text-primary animate-pulse" />
+                  <div className="flex gap-0.5 h-4 items-end">
+                    {[...Array(3)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        className="w-1 bg-current rounded-full"
+                        animate={{ height: ["30%", "100%", "30%"] }}
+                        transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.1 }}
+                      />
+                    ))}
+                  </div>
                 )}
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  className={`h-10 w-10 rounded-full transition-all ${index === currentSongIndex ? "hover:bg-white/20 text-white" : "text-primary hover:bg-primary/10"}`}
                   onClick={(e) => handleDownload(e, song)}
                 >
-                  <Download className="w-4 h-4 text-muted-foreground hover:text-primary" />
+                  <Download className="w-5 h-5" />
                 </Button>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
