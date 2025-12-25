@@ -3,9 +3,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { ChevronDown, Heart } from "lucide-react";
+import confetti from "canvas-confetti";
 
 export default function LoveZone() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleOpen = () => {
+    setIsOpen(true);
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#ec4899', '#f43f5e', '#ffffff']
+    });
+  };
 
   return (
     <div className="h-full flex flex-col items-center justify-center p-6 max-w-2xl mx-auto">
@@ -35,7 +46,7 @@ export default function LoveZone() {
 
             {!isOpen ? (
               <Button 
-                onClick={() => setIsOpen(true)}
+                onClick={handleOpen}
                 variant="outline" 
                 className="group relative px-8 py-6 border-2 border-primary/30 hover:border-primary hover:bg-primary hover:text-white text-primary rounded-full text-lg transition-all duration-500 overflow-hidden"
               >
