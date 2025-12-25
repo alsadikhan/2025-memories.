@@ -140,11 +140,15 @@ export default function Login({ onLogin }: LoginProps) {
             <div className="relative group">
               <motion.div
                 animate={password.length > 0 ? { 
-                  scale: [1, 1.1, 1],
-                  rotate: [0, 2, -2, 0],
-                  y: [0, -4, 0]
-                } : {}}
-                transition={{ duration: 0.2, type: "spring", stiffness: 300 }}
+                  scale: 1.1,
+                  rotate: 2,
+                  y: -4
+                } : {
+                  scale: 1,
+                  rotate: 0,
+                  y: 0
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
               >
                 <Input
                   type="password"
