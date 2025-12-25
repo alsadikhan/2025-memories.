@@ -10,7 +10,7 @@ function App() {
   const [viewState, setViewState] = useState<ViewState>("LOGIN");
 
   return (
-    <div className="min-h-screen font-sans bg-gradient-to-br from-pink-50 to-white text-gray-900 overflow-hidden relative">
+    <div className="min-h-screen font-sans bg-gradient-to-br from-[#fff0f3] via-[#fff5f7] to-[#ffe5ec] text-gray-900 overflow-hidden relative">
       <FloatingHearts />
       
       <AnimatePresence mode="wait">
