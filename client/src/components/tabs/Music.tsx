@@ -1,9 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Play, Pause, SkipBack, SkipForward, Music as MusicIcon, Volume2 } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward, Music as MusicIcon, Volume2, Download } from "lucide-react";
 import { Song } from "@/types";
 
 const PLAYLIST: Song[] = [
@@ -11,33 +11,46 @@ const PLAYLIST: Song[] = [
     id: "1",
     title: "Perfect",
     artist: "Ed Sheeran",
-    url: "#", // Placeholder
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
     cover: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=400&q=80",
   },
   {
     id: "2",
     title: "All of Me",
     artist: "John Legend",
-    url: "#",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
     cover: "https://images.unsplash.com/photo-1459749411177-d4a428c389f5?w=400&q=80",
   },
   {
     id: "3",
     title: "Can't Help Falling in Love",
     artist: "Elvis Presley",
-    url: "#",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
     cover: "https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=400&q=80",
+  },
+  {
+    id: "4",
+    title: "A Thousand Years",
+    artist: "Christina Perri",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+    cover: "https://images.unsplash.com/photo-1514525253344-991472a786bc?w=400&q=80",
+  },
+  {
+    id: "5",
+    title: "Say You Won't Let Go",
+    artist: "James Arthur",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+    cover: "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?w=400&q=80",
   },
 ];
 
 export default function Music() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
-  const [progress, setProgress] = useState(30); // Mock progress
+  const [progress, setProgress] = useState(0);
   
   const currentSong = PLAYLIST[currentSongIndex];
 
-  // Mock progress animation
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isPlaying) {
@@ -58,6 +71,16 @@ export default function Music() {
   const prevSong = () => {
     setCurrentSongIndex((prev) => (prev - 1 + PLAYLIST.length) % PLAYLIST.length);
     setProgress(0);
+  };
+
+  const handleDownload = (e: React.MouseEvent, song: Song) => {
+    e.stopPropagation();
+    const link = document.createElement('a');
+    link.href = song.url;
+    link.download = `${song.title} - ${song.artist}.mp3`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -88,6 +111,14 @@ export default function Music() {
                 ))}
               </div>
             )}
+            <Button
+              variant="secondary"
+              size="icon"
+              className="absolute bottom-4 right-4 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white text-primary shadow-lg"
+              onClick={(e) => handleDownload(e, currentSong)}
+            >
+              <Download className="w-5 h-5" />
+            </Button>
           </div>
           
           <div className="text-center mb-6">
@@ -133,7 +164,7 @@ export default function Music() {
           {PLAYLIST.map((song, index) => (
             <div 
               key={song.id}
-              className={`flex items-center p-2 rounded-lg transition-colors ${
+              className={`flex items-center p-2 rounded-lg transition-colors group ${
                 index === currentSongIndex ? "bg-white/60 shadow-sm border border-pink-100" : "hover:bg-white/30 cursor-pointer"
               }`}
               onClick={() => {
@@ -150,9 +181,19 @@ export default function Music() {
                 </p>
                 <p className="text-xs text-muted-foreground truncate">{song.artist}</p>
               </div>
-              {index === currentSongIndex && isPlaying && (
-                <Volume2 className="w-4 h-4 text-primary animate-pulse" />
-              )}
+              <div className="flex items-center gap-2">
+                {index === currentSongIndex && isPlaying && (
+                  <Volume2 className="w-4 h-4 text-primary animate-pulse" />
+                )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={(e) => handleDownload(e, song)}
+                >
+                  <Download className="w-4 h-4 text-muted-foreground hover:text-primary" />
+                </Button>
+              </div>
             </div>
           ))}
         </div>
