@@ -15,30 +15,46 @@ export default function Login({ onLogin }: LoginProps) {
   const { toast } = useToast();
 
   const triggerConfetti = () => {
-    const duration = 3 * 1000;
-    const animationEnd = Date.now() + duration;
-    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+    const end = Date.now() + 3 * 1000;
+    const colors = ["#ec4899", "#f43f5e", "#ff85a2", "#ffb7c5", "#ffffff"];
 
-    const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+    (function frame() {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.6 },
+        colors: colors,
+      });
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.6 },
+        colors: colors,
+      });
 
-    const interval: any = setInterval(function() {
-      const timeLeft = animationEnd - Date.now();
-
-      if (timeLeft <= 0) {
-        return clearInterval(interval);
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
       }
+    })();
 
-      const particleCount = 50 * (timeLeft / duration);
-      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
-    }, 250);
+    // Extra bursts
+    setTimeout(() => {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: colors,
+      });
+    }, 500);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (password.toLowerCase().trim() === "princess") {
       triggerConfetti();
-      setTimeout(onLogin, 1500);
+      setTimeout(onLogin, 2000);
     } else {
       toast({
         title: "Not quite right...",
@@ -81,6 +97,10 @@ export default function Login({ onLogin }: LoginProps) {
         <div className="bg-white/60 backdrop-blur-3xl p-10 rounded-[3.5rem] shadow-[0_40px_80px_-15px_rgba(236,72,153,0.2)] border border-white/80 text-center">
           <motion.div
             whileHover={{ scale: 1.1, rotate: 10 }}
+            animate={{ 
+              y: [0, -5, 0],
+            }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-primary to-rose-400 shadow-lg shadow-primary/30 mb-8"
           >
             <Heart className="w-12 h-12 text-white fill-white" />
@@ -90,16 +110,29 @@ export default function Login({ onLogin }: LoginProps) {
           <p className="text-muted-foreground mb-10 font-medium">Please enter the secret word to see your surprise</p>
           
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="relative">
-              <Input
-                type="text"
-                placeholder="The secret word..."
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="text-center text-xl bg-white/80 border-pink-100 focus:border-primary focus:ring-primary/20 rounded-2xl h-16 transition-all shadow-sm font-heading"
-                autoFocus
-              />
-              <Sparkles className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/40" />
+            <div className="relative group">
+              <motion.div
+                animate={password.length > 0 ? { scale: [1, 1.02, 1] } : {}}
+                transition={{ duration: 0.2 }}
+              >
+                <Input
+                  type="password"
+                  placeholder="The secret word..."
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="text-center text-xl bg-white/80 border-pink-100 focus:border-primary focus:ring-primary/20 rounded-2xl h-16 transition-all shadow-sm font-heading tracking-widest"
+                  autoFocus
+                />
+              </motion.div>
+              <motion.div
+                animate={{ 
+                  rotate: password.length * 10,
+                  scale: password.length > 0 ? 1.2 : 1 
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2"
+              >
+                <Sparkles className="w-5 h-5 text-primary/40" />
+              </motion.div>
             </div>
             
             <Button 
