@@ -139,7 +139,10 @@ export default function Login({ onLogin }: LoginProps) {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="relative group">
               <motion.div
-                animate={password.length > 0 ? { scale: [1, 1.02, 1] } : {}}
+                animate={password.length > 0 ? { 
+                  scale: [1, 1.05, 1],
+                  rotate: [0, 1, -1, 0]
+                } : {}}
                 transition={{ duration: 0.2 }}
               >
                 <Input
@@ -149,7 +152,7 @@ export default function Login({ onLogin }: LoginProps) {
                   onFocus={() => setIsTyping(true)}
                   onBlur={() => setIsTyping(false)}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="text-center text-xl bg-white/80 border-pink-100 focus:border-primary focus:ring-primary/20 rounded-2xl h-16 transition-all shadow-sm font-heading tracking-widest"
+                  className="text-center text-3xl bg-white/80 border-pink-100 focus:border-primary focus:ring-primary/20 rounded-2xl h-20 transition-all shadow-sm font-sans tracking-[0.5em] placeholder:tracking-normal placeholder:text-lg placeholder:font-heading"
                   autoFocus
                 />
               </motion.div>
