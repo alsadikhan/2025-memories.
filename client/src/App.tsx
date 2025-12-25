@@ -10,15 +10,21 @@ function App() {
   const [viewState, setViewState] = useState<ViewState>("LOGIN");
 
   return (
-    <div className="min-h-screen font-sans bg-gradient-to-br from-[#fff0f3] via-[#fff5f7] to-[#ffe5ec] text-gray-900 overflow-hidden relative">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="min-h-screen font-sans bg-gradient-to-br from-[#fff0f3] via-[#fff5f7] to-[#ffe5ec] text-gray-900 overflow-hidden relative"
+    >
       <FloatingHearts />
       
       <AnimatePresence mode="wait">
         {viewState === "LOGIN" ? (
           <motion.div
             key="login"
-            exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9, filter: "blur(10px)", rotate: -5 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
             className="absolute inset-0"
           >
             <Login onLogin={() => setViewState("DASHBOARD")} />
@@ -26,9 +32,9 @@ function App() {
         ) : (
           <motion.div
             key="dashboard"
-            initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)", rotate: 5 }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)", rotate: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             className="h-full"
           >
             <Dashboard />
@@ -37,7 +43,7 @@ function App() {
       </AnimatePresence>
       
       <Toaster />
-    </div>
+    </motion.div>
   );
 }
 

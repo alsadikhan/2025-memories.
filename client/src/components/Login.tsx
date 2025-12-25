@@ -140,10 +140,11 @@ export default function Login({ onLogin }: LoginProps) {
             <div className="relative group">
               <motion.div
                 animate={password.length > 0 ? { 
-                  scale: [1, 1.05, 1],
-                  rotate: [0, 1, -1, 0]
+                  scale: [1, 1.1, 1],
+                  rotate: [0, 2, -2, 0],
+                  y: [0, -4, 0]
                 } : {}}
-                transition={{ duration: 0.2 }}
+                transition={{ duration: 0.2, type: "spring", stiffness: 300 }}
               >
                 <Input
                   type="password"
@@ -152,7 +153,7 @@ export default function Login({ onLogin }: LoginProps) {
                   onFocus={() => setIsTyping(true)}
                   onBlur={() => setIsTyping(false)}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="text-center text-3xl bg-white/80 border-pink-100 focus:border-primary focus:ring-primary/20 rounded-2xl h-20 transition-all shadow-sm font-sans tracking-[0.5em] placeholder:tracking-normal placeholder:text-lg placeholder:font-heading"
+                  className="text-center text-5xl bg-white/80 border-pink-100 focus:border-primary focus:ring-primary/20 rounded-2xl h-24 transition-all shadow-sm font-sans tracking-[0.4em] placeholder:tracking-normal placeholder:text-lg placeholder:font-heading leading-none pt-4"
                   autoFocus
                 />
               </motion.div>
