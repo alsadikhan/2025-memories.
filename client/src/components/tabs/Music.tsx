@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,30 +47,57 @@ const PLAYLIST: Song[] = [
 export default function Music() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
-  const [progress, setProgress] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const audioRef = useRef<HTMLAudioElement>(null);
   
   const currentSong = PLAYLIST[currentSongIndex];
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isPlaying) {
-      interval = setInterval(() => {
-        setProgress((prev) => (prev >= 100 ? 0 : prev + 0.3));
-      }, 100);
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.play().catch(() => setIsPlaying(false));
+      } else {
+        audioRef.current.pause();
+      }
     }
-    return () => clearInterval(interval);
-  }, [isPlaying]);
+  }, [isPlaying, currentSongIndex]);
 
   const togglePlay = () => setIsPlaying(!isPlaying);
   
   const nextSong = () => {
     setCurrentSongIndex((prev) => (prev + 1) % PLAYLIST.length);
-    setProgress(0);
+    setCurrentTime(0);
   };
   
   const prevSong = () => {
     setCurrentSongIndex((prev) => (prev - 1 + PLAYLIST.length) % PLAYLIST.length);
-    setProgress(0);
+    setCurrentTime(0);
+  };
+
+  const handleTimeUpdate = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration);
+    }
+  };
+
+  const handleSliderChange = (value: number[]) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = value[0];
+      setCurrentTime(value[0]);
+    }
+  };
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
   const handleDownload = (e: React.MouseEvent, song: Song) => {
@@ -85,6 +112,13 @@ export default function Music() {
 
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-8 pb-24 md:pb-8">
+      <audio
+        ref={audioRef}
+        src={currentSong.url}
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleLoadedMetadata}
+        onEnded={nextSong}
+      />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -159,14 +193,15 @@ export default function Music() {
             <div className="space-y-8">
               <div className="relative px-2">
                 <Slider 
-                  value={[progress]} 
-                  max={100} 
+                  value={[currentTime]} 
+                  max={duration || 100} 
                   step={0.1}
+                  onValueChange={handleSliderChange}
                   className="cursor-pointer"
                 />
                 <div className="flex justify-between mt-3 text-xs font-bold text-muted-foreground tracking-tighter">
-                  <span>0:00</span>
-                  <span>3:45</span>
+                  <span>{formatTime(currentTime)}</span>
+                  <span>{formatTime(duration)}</span>
                 </div>
               </div>
               
@@ -194,59 +229,59 @@ export default function Music() {
           </CardContent>
         </Card>
         
-            <div className="space-y-4">
-              <h4 className="text-sm font-bold text-primary/60 mb-4 uppercase tracking-[0.2em] px-2">Your Favorites</h4>
-              <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 scrollbar-hide">
-                {PLAYLIST.map((song, index) => (
-                  <motion.div 
-                    key={song.id}
-                    whileHover={{ x: 10 }}
-                    className={`flex items-center p-4 rounded-[1.5rem] transition-all group ${
-                      index === currentSongIndex ? "bg-primary text-white shadow-xl shadow-primary/30" : "bg-white/40 hover:bg-white/60 backdrop-blur-sm cursor-pointer"
-                    }`}
-                    onClick={() => {
-                      setCurrentSongIndex(index);
-                      setIsPlaying(true);
-                    }}
+        <div className="space-y-4">
+          <h4 className="text-sm font-bold text-primary/60 mb-4 uppercase tracking-[0.2em] px-2">Your Favorites</h4>
+          <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 scrollbar-hide">
+            {PLAYLIST.map((song, index) => (
+              <motion.div 
+                key={song.id}
+                whileHover={{ x: 10 }}
+                className={`flex items-center p-4 rounded-[1.5rem] transition-all group ${
+                  index === currentSongIndex ? "bg-primary text-white shadow-xl shadow-primary/30" : "bg-white/40 hover:bg-white/60 backdrop-blur-sm cursor-pointer"
+                }`}
+                onClick={() => {
+                  setCurrentSongIndex(index);
+                  setIsPlaying(true);
+                }}
+              >
+                <div className="w-14 h-14 rounded-2xl overflow-hidden mr-4 shadow-lg border-2 border-white/20">
+                  <img src={song.cover} alt={song.title} className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={`text-lg font-bold truncate ${index === currentSongIndex ? "text-white" : "text-gray-800"}`}>
+                    {song.title}
+                  </p>
+                  <p className={`text-sm truncate ${index === currentSongIndex ? "text-white/80" : "text-primary/70"}`}>
+                    {song.artist}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  {index === currentSongIndex && isPlaying && (
+                    <div className="flex gap-0.5 h-4 items-end">
+                      {[...Array(3)].map((_, i) => (
+                        <motion.div
+                          key={i}
+                          className="w-1 bg-current rounded-full"
+                          animate={{ height: ["30%", "100%", "30%"] }}
+                          transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.1 }}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={`h-10 w-10 rounded-full transition-all ${index === currentSongIndex ? "hover:bg-white/20 text-white" : "text-primary hover:bg-primary/10"}`}
+                    onClick={(e) => handleDownload(e, song)}
                   >
-                    <div className="w-14 h-14 rounded-2xl overflow-hidden mr-4 shadow-lg border-2 border-white/20">
-                      <img src={song.cover} alt={song.title} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className={`text-lg font-bold truncate ${index === currentSongIndex ? "text-white" : "text-gray-800"}`}>
-                        {song.title}
-                      </p>
-                      <p className={`text-sm truncate ${index === currentSongIndex ? "text-white/80" : "text-primary/70"}`}>
-                        {song.artist}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {index === currentSongIndex && isPlaying && (
-                        <div className="flex gap-0.5 h-4 items-end">
-                          {[...Array(3)].map((_, i) => (
-                            <motion.div
-                              key={i}
-                              className="w-1 bg-current rounded-full"
-                              animate={{ height: ["30%", "100%", "30%"] }}
-                              transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.1 }}
-                            />
-                          ))}
-                        </div>
-                      )}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className={`h-10 w-10 rounded-full transition-all ${index === currentSongIndex ? "hover:bg-white/20 text-white" : "text-primary hover:bg-primary/10"}`}
-                        onClick={(e) => handleDownload(e, song)}
-                      >
-                        <Download className="w-5 h-5" />
-                      </Button>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
+                    <Download className="w-5 h-5" />
+                  </Button>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
-      );
-    }
+      </div>
+    </div>
+  );
+}
