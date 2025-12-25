@@ -27,7 +27,7 @@ export default function Gallery() {
     <div className="p-4 max-w-4xl mx-auto">
       <h2 className="text-3xl font-heading text-center mb-8">Our Memories</h2>
       
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {PHOTOS.map((photo, index) => (
           <motion.div
             key={photo.id}

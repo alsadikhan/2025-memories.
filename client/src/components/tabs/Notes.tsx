@@ -15,7 +15,7 @@ export default function Notes() {
     <div className="p-4 max-w-3xl mx-auto">
       <h2 className="text-3xl font-heading text-center mb-8">Daily Reminders</h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-20">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
         {REMINDERS.map((note, index) => (
           <motion.div
             key={note.id}

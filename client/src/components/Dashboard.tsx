@@ -18,10 +18,10 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="relative z-10 min-h-screen flex flex-col max-w-md md:max-w-4xl mx-auto bg-white/30 md:bg-white/20 md:backdrop-blur-sm md:my-8 md:rounded-3xl md:shadow-2xl md:border md:border-white/40 overflow-hidden">
-      <div className="flex-1 overflow-y-auto scrollbar-hide">
+    <div className="relative z-10 min-h-screen flex flex-col w-full max-w-5xl mx-auto md:my-8 md:rounded-3xl md:shadow-2xl md:border md:border-white/40 overflow-hidden bg-white/20 backdrop-blur-sm">
+      <div className="flex-1 overflow-y-auto scrollbar-hide pb-20 md:pb-0">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
-          <div className="flex-1 p-4 pb-24 md:pb-4">
+          <div className="flex-1 p-4 md:p-8">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
