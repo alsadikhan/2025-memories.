@@ -10,12 +10,42 @@ export default function LoveZone() {
 
   const handleOpen = () => {
     setIsOpen(true);
+    const colors = ["#ec4899", "#f43f5e", "#ff85a2", "#ffb7c5", "#ffffff"];
+    
+    // Initial burst
     confetti({
       particleCount: 150,
       spread: 70,
       origin: { y: 0.6 },
-      colors: ['#ec4899', '#f43f5e', '#ffffff']
+      colors: colors
     });
+
+    // Side cannons for extra flair
+    const duration = 2 * 1000;
+    const animationEnd = Date.now() + duration;
+
+    const frame = () => {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft > 0) {
+        confetti({
+          particleCount: 2,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: colors
+        });
+        confetti({
+          particleCount: 2,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: colors
+        });
+        requestAnimationFrame(frame);
+      }
+    };
+    frame();
   };
 
   return (
