@@ -5,7 +5,7 @@ import LoveZone from "./tabs/LoveZone";
 import Music from "./tabs/Music";
 import Gallery from "./tabs/Gallery";
 import Notes from "./tabs/Notes";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("love");
@@ -22,18 +22,29 @@ export default function Dashboard() {
       <div className="flex-1 overflow-y-auto scrollbar-hide">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
           <div className="flex-1 p-4 pb-24 md:pb-4">
-            <TabsContent value="love" className="mt-0 h-full focus-visible:ring-0">
-              <LoveZone />
-            </TabsContent>
-            <TabsContent value="music" className="mt-0 h-full focus-visible:ring-0">
-              <Music />
-            </TabsContent>
-            <TabsContent value="gallery" className="mt-0 h-full focus-visible:ring-0">
-              <Gallery />
-            </TabsContent>
-            <TabsContent value="notes" className="mt-0 h-full focus-visible:ring-0">
-              <Notes />
-            </TabsContent>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, x: 20, filter: "blur(10px)" }}
+                animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, x: -20, filter: "blur(10px)" }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                className="h-full"
+              >
+                <TabsContent value="love" className="mt-0 h-full focus-visible:ring-0">
+                  <LoveZone />
+                </TabsContent>
+                <TabsContent value="music" className="mt-0 h-full focus-visible:ring-0">
+                  <Music />
+                </TabsContent>
+                <TabsContent value="gallery" className="mt-0 h-full focus-visible:ring-0">
+                  <Gallery />
+                </TabsContent>
+                <TabsContent value="notes" className="mt-0 h-full focus-visible:ring-0">
+                  <Notes />
+                </TabsContent>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           <div className="fixed bottom-0 left-0 right-0 md:static md:bg-transparent bg-white/80 backdrop-blur-lg border-t border-white/50 p-2 md:p-6 z-50">
