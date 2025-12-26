@@ -157,7 +157,7 @@ export default function Login({ onLogin }: LoginProps) {
                   onFocus={() => setIsTyping(true)}
                   onBlur={() => setIsTyping(false)}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="text-center text-5xl bg-white/80 border-pink-100 focus:border-primary focus:ring-primary/20 rounded-2xl h-24 transition-all shadow-sm font-sans tracking-[0.4em] placeholder:tracking-normal placeholder:text-lg placeholder:font-heading leading-none pt-4"
+                  className="text-center text-xl bg-white/80 border-pink-100 focus:border-primary focus:ring-primary/20 rounded-2xl h-14 transition-all shadow-sm font-sans tracking-[0.2em] placeholder:tracking-normal placeholder:text-base placeholder:font-heading leading-none pt-1"
                   autoFocus
                 />
               </motion.div>
