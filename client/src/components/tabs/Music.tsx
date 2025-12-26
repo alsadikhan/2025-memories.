@@ -145,15 +145,15 @@ export default function Music() {
               
               {isPlaying && (
                 <div className="absolute bottom-6 left-6 flex items-end gap-1.5 h-12">
-                  {[...Array(6)].map((_, i) => (
+                  {[...Array(3)].map((_, i) => (
                     <motion.div
                       key={i}
                       className="w-1.5 bg-white/90 rounded-full"
-                      animate={{ height: ["20%", "100%", "40%", "80%", "20%"] }}
+                      animate={{ height: ["20%", "100%", "20%"] }}
                       transition={{
-                        duration: 0.8 + Math.random(),
+                        duration: 1,
                         repeat: Infinity,
-                        delay: i * 0.1,
+                        delay: i * 0.2,
                       }}
                     />
                   ))}

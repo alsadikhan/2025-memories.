@@ -31,16 +31,17 @@ export default function Gallery() {
         {PHOTOS.map((photo, index) => (
           <motion.div
             key={photo.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="group relative aspect-[3/4] rounded-xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 bg-white"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: index * 0.05 }}
+            className="group relative aspect-[3/4] rounded-xl overflow-hidden cursor-pointer shadow-md bg-white"
             onClick={() => setSelectedPhoto(photo)}
           >
             <img 
               src={photo.src} 
               alt={photo.caption} 
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              loading="lazy"
+              className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <ZoomIn className="text-white w-8 h-8 drop-shadow-lg" />

@@ -68,22 +68,22 @@ export default function Login({ onLogin }: LoginProps) {
 
   return (
     <div className="min-h-screen flex items-center justify-center relative z-10 px-4 overflow-hidden bg-[#fff5f7]">
-      {/* Floating emojis background */}
+      {/* Floating emojis background - Reduced count for performance */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(8)].map((_, i) => (
+        {[...Array(4)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute text-2xl opacity-20"
-            initial={{ 
-              x: Math.random() * 100 + "vw", 
-              y: Math.random() * 100 + "vh" 
+            style={{ 
+              left: (i * 25) + "%",
+              top: (i * 20) + "%"
             }}
             animate={{ 
               y: ["0vh", "100vh"],
               rotate: 360 
             }}
             transition={{ 
-              duration: 15 + Math.random() * 20, 
+              duration: 20 + Math.random() * 10, 
               repeat: Infinity, 
               ease: "linear" 
             }}
@@ -92,30 +92,14 @@ export default function Login({ onLogin }: LoginProps) {
           </motion.div>
         ))}
         
-        <motion.div 
-          animate={{ 
-            scale: [1, 1.2, 1],
-            x: [0, 50, 0],
-            y: [0, 30, 0] 
-          }}
-          transition={{ duration: 10, repeat: Infinity }}
-          className="absolute -top-24 -left-24 w-96 h-96 bg-pink-200/40 rounded-full blur-3xl" 
-        />
-        <motion.div 
-          animate={{ 
-            scale: [1.2, 1, 1.2],
-            x: [0, -40, 0],
-            y: [0, -50, 0] 
-          }}
-          transition={{ duration: 12, repeat: Infinity }}
-          className="absolute -bottom-32 -right-32 w-[30rem] h-[30rem] bg-rose-100/50 rounded-full blur-3xl" 
-        />
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-pink-200/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-32 -right-32 w-[30rem] h-[30rem] bg-rose-100/30 rounded-full blur-3xl pointer-events-none" />
       </div>
 
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.5 }}
         className="relative z-20 w-full max-w-md"
       >
         <div className="bg-white/60 backdrop-blur-3xl p-10 rounded-[3.5rem] shadow-[0_40px_80px_-15px_rgba(236,72,153,0.2)] border border-white/80 text-center group">
