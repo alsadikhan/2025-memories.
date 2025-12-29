@@ -5,7 +5,7 @@ import path from "path";
 
 export default defineConfig({
   // 🔴 GitHub repo name
-  base: "/2025-memories/",
+  base: "/2025-memories./",
 
   plugins: [
     react(),
